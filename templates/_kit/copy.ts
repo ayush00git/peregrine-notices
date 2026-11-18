@@ -91,26 +91,29 @@ export function headline(n: Notice): { verb: string; where: string[] } {
   return { verb: `Fewer ${vehicles}`, where: [`after ${r.change.after},`, `every ${r.change.everyMinutes} minutes`] };
 }
 
-/** "Sat 9 – Mon 11 January": the dates, as a poster says them. */
-export function when(n: Notice): string {
+/** ["Sat 9 – Mon 11 January"]: the dates, as a poster says them; a range across two months takes two lines. */
+export function when(n: Notice): string[] {
   const day = (d: string) => formatDate(d, LOCALE, { weekday: "short", day: "numeric" });
   const month = (d: string) => formatDate(d, LOCALE, { month: "long" });
-  if (n.starts === n.ends) return `${day(n.starts)} ${month(n.starts)}`;
-  if (month(n.starts) === month(n.ends)) return `${day(n.starts)} – ${day(n.ends)} ${month(n.ends)}`;
-  return `${day(n.starts)} ${month(n.starts)} – ${day(n.ends)} ${month(n.ends)}`;
+  if (n.starts === n.ends) return [`${day(n.starts)} ${month(n.starts)}`];
+  if (month(n.starts) === month(n.ends)) return [`${day(n.starts)} – ${day(n.ends)} ${month(n.ends)}`];
+  return [`${day(n.starts)} ${month(n.starts)} –`, `${day(n.ends)} ${month(n.ends)}`];
 }
 
 const shift = (date: string, days: number) => new Date(Date.parse(date) + days * 86_400_000).toISOString().slice(0, 10);
 const weekday = (d: string) => formatDate(d, LOCALE, { weekday: "short" });
 
-/** ["Last train Fri 22:10", "First train Tue 05:30"]: the edges of the works, which strand people when left out. */
-export function edges(n: Notice): string[] {
+/**
+ * The edges of the works, which strand people when they're left out, as rows of a little timetable:
+ * [["Last train", "Fri 22:10"], ["First train", "Tue 05:30"]].
+ */
+export function edges(n: Notice): [string, string][] {
   const r = read(n);
   const v = r.line.vehicle;
-  if (r.kind === "reduced") return [`Last ${v} ${r.change.lastTrain} each night`];
+  if (r.kind === "reduced") return [[`Last ${v}`, `${r.change.lastTrain} each night`]];
   return [
-    `Last ${v} ${weekday(shift(n.starts, -1))} ${r.change.lastTrainBefore}`,
-    `First ${v} ${weekday(shift(n.ends, 1))} ${r.change.firstTrainAfter}`,
+    [`Last ${v}`, `${weekday(shift(n.starts, -1))} ${r.change.lastTrainBefore}`],
+    [`First ${v}`, `${weekday(shift(n.ends, 1))} ${r.change.firstTrainAfter}`],
   ];
 }
 
