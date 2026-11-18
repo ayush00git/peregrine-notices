@@ -25,6 +25,7 @@ const EXPECTED: Record<string, { code: string; path: string; says: string }> = {
   "works-end-before-they-start": { code: "template/render", path: "root", says: "The works end (2027-01-09) before they start (2027-01-11)" },
   "posted-too-late": { code: "template/render", path: "root", says: "riders need at least 7 days' notice" },
   "skip-the-end-of-the-line": { code: "template/render", path: "root", says: "High Moor is the end of the Moor line, so trains can't skip it" },
+  "too-long-for-a-poster": { code: "template/render", path: "root", says: "Too long for a poster: what to do and why run 1 line past the page" },
   "fewer-that-isnt-fewer": { code: "template/render", path: "root", says: "A train every 12 minutes isn't fewer: the Airport line runs every 15 minutes" },
 };
 
