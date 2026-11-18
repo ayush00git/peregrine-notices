@@ -61,7 +61,7 @@ const leftHeight = (n: Notice, r: Read) => {
 
 export default template({
   id: "peregrine.StopPoster",
-  version: "1.1.0",
+  version: "1.0.0",
   label: "Stop posters",
   guidance: "One notice per change. Posters go up at every stop the change touches, at least 7 days before it starts.",
   root: "Document",

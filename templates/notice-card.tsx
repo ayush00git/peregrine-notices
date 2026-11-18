@@ -44,7 +44,7 @@ const broken = (lines: string[]) =>
 
 export default template({
   id: "peregrine.NoticeCard",
-  version: "1.1.0",
+  version: "1.0.0",
   label: "Notice card",
   root: "Canvas",
   formats: { landscape: { width: CARD.width, height: CARD.height, scale: 2 } },
