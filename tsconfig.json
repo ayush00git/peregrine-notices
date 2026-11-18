@@ -9,7 +9,7 @@
     "noEmit": true,
     "allowImportingTsExtensions": true,
     "resolveJsonModule": true,
-    "types": []
+    "types": ["node"]
   },
   "include": ["templates", "scripts", "test", "gallery"]
 }

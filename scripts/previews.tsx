@@ -9,6 +9,7 @@ import { mkdtempSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
 import { chromium } from "playwright-core";
+import type { ReactElement } from "react";
 import { renderInEmailClients } from "@hyper-elements/email-clients";
 import { readValuesFile } from "@hyper-elements/react/template";
 import NoticeEmail from "../templates/notice-email.tsx";
@@ -20,7 +21,10 @@ const { values } = readValuesFile(file, NoticeEmail);
 const checked = NoticeEmail.check(values);
 if (!checked.valid) throw new Error(checked.diagnostics.map((d) => d.message).join("\n"));
 
-const { previews } = await renderInEmailClients(checked.snapshots.default!, { emailClients: ["outlook", "gmail", "apple-mail"], fonts: "inline" });
+// The checked snapshot, so what's previewed is what was checked. renderInEmailClients() takes one at run time; its
+// types (email-clients 0.5.0) only name an element or HTML, hence the cast.
+const snapshot = checked.snapshots.default! as unknown as ReactElement;
+const { previews } = await renderInEmailClients(snapshot, { emailClients: ["outlook", "gmail", "apple-mail"], fonts: "inline" });
 const browser = await chromium.launch(process.env.CHROMIUM_PATH ? { executablePath: process.env.CHROMIUM_PATH } : {});
 await mkdir(join(ROOT, "docs", "clients"), { recursive: true });
 for (const preview of previews) {
