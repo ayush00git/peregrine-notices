@@ -20,6 +20,8 @@ const ROOT = join(import.meta.dirname, "..");
 const CLI = join(ROOT, "node_modules", "@hyper-elements", "cli", "dist", "bin.js");
 const TMP = mkdtempSync(join(tmpdir(), "peregrine-hero-"));
 const cli = (...args: string[]) => spawnSync(process.execPath, [CLI, ...args], { cwd: ROOT, encoding: "utf8" });
+/** check run from designs/, as a planner would: its paths are the notices' own. */
+const checkIn = (...args: string[]) => spawnSync(process.execPath, [CLI, "check", ...args], { cwd: join(ROOT, "designs"), encoding: "utf8" });
 
 // 1. The real outputs, rendered fresh.
 const rendered = cli("render", "designs/pe-2701/", "--out", TMP);
@@ -29,24 +31,28 @@ const notice = JSON.parse(readFileSync(join(ROOT, "designs", "pe-2701", "brief.j
 const stops = affectedStops(notice);
 
 // 2. Each poster page as a PNG, at twice the size it's shown.
-const W = { poster: 208, email: 232, card: 502, tile: 322 };
-const H = { poster: 294, row: 282 };
+const W: Record<string, number> = { poster: 208, card: 480, row: 1104 };
+const H = { poster: 294, row: 270 };
 execFileSync("pdftoppm", ["-png", "-scale-to-x", String(W.poster * 2), "-scale-to-y", "-1", join(out, "stop-poster.a4.pdf"), join(TMP, "poster")]);
 const posterFiles = readdirSync(TMP).filter((f) => f.startsWith("poster")).sort();
 
-// 3. The email at a phone's width, its top: the band, what to do instead, the line.
+// 3. The email at a phone's width, from the top to the end of its first step: the band and what to do first.
 const browser = await chromium.launch(process.env.CHROMIUM_PATH ? { executablePath: process.env.CHROMIUM_PATH } : {});
 const page = await browser.newPage({ viewport: { width: 375, height: 900 }, deviceScaleFactor: 2 });
 await page.goto(`file://${join(out, "notice-email.html")}`, { waitUntil: "networkidle" });
+const second = await page.getByText(/^Allow \d+ minutes more/).first().boundingBox();
+const crop = Math.round(second!.y - 17); // the rule under the first step
 const emailShot = join(TMP, "email.png");
-await page.screenshot({ path: emailShot, clip: { x: 0, y: 0, width: 375, height: Math.round(375 * (H.row / W.email)) } });
+await page.screenshot({ path: emailShot, clip: { x: 0, y: 0, width: 375, height: crop } });
 await browser.close();
+W.email = Math.round((H.row * 375) / crop);
+W.tile = W.row - W.email - W.card - 2 * 24;
 
 // 4. What check says: the notice written, and one refused. Its own lines, trimmed to the ones that matter.
 const said = (run: ReturnType<typeof cli>) =>
   run.stdout.split("\n").filter((line) => /^[✓✗]|^\s+error /.test(line)).map((line) => line.trim().replace(/^error /, "error "));
-const written = said(cli("check", "designs/pe-2701/", "--require-template"));
-const refused = said(cli("check", "designs/_refused/closure-without-bus.values.json"));
+const written = said(checkIn("pe-2701/", "--require-template"));
+const refused = said(checkIn("_refused/closure-without-bus.values.json"));
 
 // 5. The board.
 const images: Record<string, Buffer> = {};
@@ -55,11 +61,13 @@ const asset = (name: string, file: string, width: number, height: number) => {
   images[src] = readFileSync(file);
   return { src, width, height };
 };
+/** On Ink: the notices that passed, dimmed (about 7:1), so the refusal is what's read. */
+const DIM = "#A3A9AF";
 const caption = (text: string) => (
   <Text style={{ fontFamily: MONO, fontWeight: 700, fontSize: 11, letterSpacing: 1.2, textTransform: "uppercase", color: "#3F454C", lineHeight: 1.2 }}>{text}</Text>
 );
 const mono = (text: string, color: string) => (
-  <Text style={{ fontFamily: `${MONO}, DejaVu Sans Mono`, fontWeight: 500, fontSize: 10.5, color, lineHeight: 1.45 }}>{text}</Text>
+  <Text style={{ fontFamily: `${MONO}, DejaVu Sans Mono`, fontWeight: 500, fontSize: 9.5, color, lineHeight: 1.5 }}>{text}</Text>
 );
 
 const board = (
@@ -78,7 +86,7 @@ const board = (
     <Row style={{ gap: 24 }}>
       <Column style={{ width: W.email, gap: 8 }}>
         {caption("Rider email · no images")}
-        <Image src={asset("email.png", emailShot, 750, Math.round(750 * (H.row / W.email)))} alt="The rider email on a phone" style={{ width: W.email }} />
+        <Image src={asset("email.png", emailShot, 750, crop * 2)} alt="The rider email on a phone" style={{ width: W.email }} />
       </Column>
       <Column style={{ width: W.card, gap: 8 }}>
         {caption("Social card · 1200 × 675")}
@@ -87,8 +95,8 @@ const board = (
       <Column style={{ width: W.tile, gap: 8 }}>
         {caption("npx hyper-elements check")}
         <Column style={{ backgroundColor: INK, padding: 16, gap: 10, height: H.row }}>
-          <Column>{written.map((line, i) => <Row key={i}>{mono(line.replace("designs/", ""), ENAMEL)}</Row>)}</Column>
-          <Column>{refused.map((line, i) => <Row key={i}>{mono(line.replace("designs/", ""), i === 0 ? ENAMEL : "#FFB4A6")}</Row>)}</Column>
+          <Column>{written.map((line, i) => <Row key={i}>{mono(line, DIM)}</Row>)}</Column>
+          <Column>{refused.map((line, i) => <Row key={i}>{mono(line, ENAMEL)}</Row>)}</Column>
         </Column>
       </Column>
     </Row>
