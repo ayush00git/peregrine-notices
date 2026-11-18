@@ -1,0 +1,28 @@
+{
+  "version": 1,
+  "template": {
+    "module": "../../templates/notice-card.tsx",
+    "id": "peregrine.NoticeCard",
+    "version": "1.0.0",
+    "sha256": "7def3809dc9d0c392c87e454acc8c9214b378a679ddfd2a35f5fffb1142afcf5"
+  },
+  "formats": [
+    "landscape"
+  ],
+  "values": {
+    "notice": "PE-2703",
+    "posted": "2027-02-08",
+    "starts": "2027-03-01",
+    "ends": "2027-03-26",
+    "change": [
+      {
+        "type": "airport.reduced",
+        "after": "21:00",
+        "everyMinutes": 12,
+        "lastTrain": "23:40"
+      }
+    ],
+    "extraMinutes": 10,
+    "reason": "We're repainting the Viaduct's steelwork at night, so one track is closed after nine."
+  }
+}

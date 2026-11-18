@@ -70,6 +70,12 @@ export function assertNotice(n: Notice): void {
   if (r.kind === "closure" && r.from === r.to) throw new Error(`From and To are both ${r.from}: a closure runs between two stops`);
   if (r.kind === "skip" && r.change.useInstead === r.change.stop)
     throw new Error(`Use instead is ${r.change.stop}, the stop ${r.line.vehicle}s skip`);
+  if (r.kind === "skip" && [r.line.stops[0], r.line.stops.at(-1)].includes(r.change.stop)) {
+    const next = r.line.stops[0] === r.change.stop ? r.line.stops[1] : r.line.stops.at(-2);
+    throw new Error(`${r.change.stop} is the end of the ${r.line.name} line, so ${r.line.vehicle}s can't skip it: write it as a closure from ${next} to ${r.change.stop}`);
+  }
+  if (r.kind === "reduced" && r.change.everyMinutes <= r.line.every)
+    throw new Error(`A ${r.line.vehicle} every ${r.change.everyMinutes} minutes isn't fewer: the ${r.line.name} line runs every ${r.line.every} minutes`);
   if (n.here !== undefined && !affectedStops(n).includes(n.here))
     throw new Error(`${n.here} gets no poster for this change: posters go up at ${affectedStops(n).join(", ")}`);
 }

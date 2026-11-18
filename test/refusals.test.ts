@@ -24,6 +24,8 @@ const EXPECTED: Record<string, { code: string; path: string; says: string }> = {
   "extra-time-too-long": { code: "template/value", path: "values.extraMinutes", says: "from 0 to 60, not 90" },
   "works-end-before-they-start": { code: "template/render", path: "root", says: "The works end (2027-01-09) before they start (2027-01-11)" },
   "posted-too-late": { code: "template/render", path: "root", says: "riders need at least 7 days' notice" },
+  "skip-the-end-of-the-line": { code: "template/render", path: "root", says: "High Moor is the end of the Moor line, so trains can't skip it" },
+  "fewer-that-isnt-fewer": { code: "template/render", path: "root", says: "A train every 12 minutes isn't fewer: the Airport line runs every 15 minutes" },
 };
 
 type Result = { file?: string; status?: string; diagnostics?: { code: string; severity: string; message: string; path?: string }[] };
