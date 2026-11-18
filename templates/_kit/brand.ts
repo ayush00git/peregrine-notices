@@ -10,6 +10,8 @@ export const INK = "#111417";
 export const QUIET = "#596069";
 export const RULE = "#D8DBD6";
 export const CONCRETE = "#E6E8E3";
+/** Words on a line's colour. */
+export const WHITE = "#FFFFFF";
 
 export const SANS = "Atkinson Hyperlegible Next";
 export const MONO = "Atkinson Hyperlegible Mono";

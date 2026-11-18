@@ -4,7 +4,7 @@
     "module": "../../templates/notice-card.tsx",
     "id": "peregrine.NoticeCard",
     "version": "1.0.0",
-    "sha256": "8716347b82ae280878fd0b861d5969fe242f5d50ee13d6170ecc65cc5be4dfa5"
+    "sha256": "c82f6d27438a5272f3cfd0947c3c4578df043d0b41a7ddd6761d3f69f8bbebb1"
   },
   "formats": [
     "landscape"

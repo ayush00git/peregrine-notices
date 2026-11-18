@@ -15,13 +15,12 @@
 import { Fragment } from "react";
 import { Canvas, Column, Heading, LineBreak, Rect, Row, Svg, Text } from "@hyper-elements/react";
 import { template } from "@hyper-elements/react/template";
-import { ENAMEL, FONTS, INK, label, QUIET, SANS_STACK } from "./_kit/brand.ts";
+import { ENAMEL, FONTS, INK, label, QUIET, SANS_STACK, WHITE } from "./_kit/brand.ts";
 import { mono, sink, SMALL, Strip } from "./_kit/card-strip.tsx";
 import { assertNotice, headline, read, when, type Notice } from "./_kit/copy.ts";
 import { EXAMPLE, FIELDS } from "./_kit/fields.ts";
 import { CARD, tight } from "./_kit/type.ts";
 
-const WHITE = "#FFFFFF";
 const PANEL = 368;
 /** The time to allow: Atkinson Mono capitals at the size of the headline's second line. */
 const FIGURE = CARD.where[0];

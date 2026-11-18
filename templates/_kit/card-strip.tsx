@@ -6,13 +6,12 @@
  */
 import type { ReactElement } from "react";
 import { Column, Layer, Path, Polygon, Rect, Row, Svg, Text } from "@hyper-elements/react";
-import { ENAMEL, INK, MONO_STACK, QUIET, SANS_STACK } from "./brand.ts";
+import { ENAMEL, INK, MONO_STACK, QUIET, SANS_STACK, WHITE } from "./brand.ts";
 import { read, type Notice } from "./copy.ts";
 import { walkBetween } from "./network.ts";
 
 /** The card's one small size: stop names, chips, labels. */
 export const SMALL = 20;
-const WHITE = "#FFFFFF";
 
 const LINE = 20; // the line's thickness
 const EDGE = 5; // a hollow line's two edges

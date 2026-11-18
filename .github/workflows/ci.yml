@@ -26,3 +26,6 @@ jobs:
       # Refusals still refuse, every headline fits, the outputs are what we expect.
       - run: npm test
       - run: npx hyper-elements render designs/
+      # The gallery copies are generated from templates/: they must be up to date, and render as the site renders them.
+      - run: npx tsx scripts/gallery.ts && git diff --exit-code gallery/
+      - run: npx tsx scripts/gallery-check.tsx

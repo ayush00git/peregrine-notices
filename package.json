@@ -5,14 +5,25 @@
   "description": "Service-change notices built on Hyper Elements template(): a rider email, a poster for every affected stop and a social card, with guardrails that refuse unsafe notices.",
   "license": "MIT",
   "type": "module",
-  "engines": { "node": ">=20" },
+  "engines": {
+    "node": ">=20"
+  },
   "scripts": {
     "check": "hyper-elements check templates/ --max-warnings 0 && hyper-elements check designs/ --require-template --max-warnings 0",
     "render": "hyper-elements render designs/",
     "test": "node --import tsx --test test/*.test.ts",
-    "typecheck": "tsc --noEmit"
+    "typecheck": "tsc --noEmit",
+    "gallery": "tsx scripts/gallery.ts && tsx scripts/gallery-check.tsx",
+    "hero": "tsx scripts/hero.tsx",
+    "gif": "tsx scripts/gif.tsx",
+    "previews": "tsx scripts/previews.tsx",
+    "rerecord": "tsx scripts/rerecord.ts"
   },
-  "hyperElements": { "templates": ["templates/**"] },
+  "hyperElements": {
+    "templates": [
+      "templates/**"
+    ]
+  },
   "dependencies": {
     "@hyper-elements/lint": "0.1.8",
     "@hyper-elements/react": "0.5.0",
@@ -28,6 +39,7 @@
     "@types/react": "19.3.0",
     "playwright-core": "1.63.0",
     "tsx": "4.23.15",
-    "typescript": "5.9.3"
+    "typescript": "5.9.3",
+    "esbuild": "0.28.2"
   }
 }

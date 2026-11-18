@@ -4,7 +4,7 @@
     "module": "../../templates/stop-poster.tsx",
     "id": "peregrine.StopPoster",
     "version": "1.0.0",
-    "sha256": "0a02ac3fdac43745b26668d66a63a15d9e5d940b859bb1cb4b42da4f6025ef1e"
+    "sha256": "23495ef753af682cb3087a6f0f09402b93247bd2d072da643b0594e0057b0d28"
   },
   "formats": [
     "a4"

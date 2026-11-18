@@ -13,7 +13,7 @@
 import { Column, Document, Heading, PageFooter, Row, Text, prop } from "@hyper-elements/react";
 import { formatDate, template } from "@hyper-elements/react/template";
 import "./_kit/pdf.ts";
-import { ENAMEL, FONTS, INK, label, MONO_STACK, QUIET, RULE, SANS_STACK, theme } from "./_kit/brand.ts";
+import { ENAMEL, FONTS, INK, label, MONO_STACK, QUIET, RULE, SANS_STACK, theme, WHITE } from "./_kit/brand.ts";
 import { affectedStops, assertNotice, edges, headline, read, status, steps, when, type Notice, type Read } from "./_kit/copy.ts";
 import { EXAMPLE, FIELDS } from "./_kit/fields.ts";
 import { ALL_STOPS } from "./_kit/network.ts";
@@ -21,7 +21,6 @@ import { linesOf } from "./_kit/poster-fit.ts";
 import { CHIP, DEPARTURES, Departures, LineDiagram, pad } from "./_kit/poster-line.tsx";
 import { POSTER, tight } from "./_kit/type.ts";
 
-const WHITE = "#FFFFFF";
 /** A4 inside its margins, in px; under the headline, two columns: what to do, and the line. */
 const PAGE = { width: (210 / 25.4) * 96 - 2 * POSTER.margin, height: Math.floor((297 / 25.4) * 96 - 2 * POSTER.margin) };
 const GAP = 40;
@@ -30,7 +29,7 @@ const RIGHT = Math.floor(PAGE.width - LEFT - GAP);
 const NUMBER = 32; // a step's number, before its words
 const SPACE = { panel: 28, status: 24, footer: 16 };
 
-const LINE = POSTER.edges * 1.3; // a line of the 20px text
+const TEXT_LINE = POSTER.edges * 1.3; // a line of the 20px text
 const LABEL = POSTER.small * 1.3;
 const body = { fontSize: POSTER.edges, lineHeight: 1.3 } as const;
 const mono = { fontFamily: MONO_STACK, fontSize: POSTER.edges, fontWeight: 700, letterSpacing: 1.2, textTransform: "uppercase", lineHeight: 1.3 } as const;
@@ -40,7 +39,7 @@ const monoWidth = (letters: number) => Math.ceil(letters * (0.65 * POSTER.edges 
 /** The page, top to bottom: the panel, the status, then the two columns, which get what's left above the footer. */
 const panelHeight = (where: number, dates: number) =>
   2 * POSTER.panelPadding + LABEL + 20 + POSTER.verb * 0.95 + 4 + POSTER.where * where + 20 + POSTER.when * 1.15 * dates;
-const statusHeight = (note: number) => 2 * POSTER.status * 1.05 + 8 + note * LINE;
+const statusHeight = (note: number) => 2 * POSTER.status * 1.05 + 8 + note * TEXT_LINE;
 const FOOTER = 12 + 1 + LABEL; // its padding, its rule and its line
 const room = (where: number, dates: number, note: number) =>
   PAGE.height - panelHeight(where, dates) - SPACE.panel - statusHeight(note) - SPACE.status - FOOTER - SPACE.footer;
@@ -54,9 +53,9 @@ const pitchFor = (stops: number, room: number) => {
 
 /** The left column's height, as it's laid out below: what to do, the departures, the last and first trains, why. */
 const leftHeight = (n: Notice, r: Read) => {
-  const words = steps(n).reduce((sum, step) => sum + 12 + (step.label ? LABEL + 4 : 0) + linesOf(step.text, POSTER.edges, LEFT - NUMBER) * LINE, LABEL);
+  const words = steps(n).reduce((sum, step) => sum + 12 + (step.label ? LABEL + 4 : 0) + linesOf(step.text, POSTER.edges, LEFT - NUMBER) * TEXT_LINE, LABEL);
   const strip = r.kind === "reduced" ? 20 + DEPARTURES : 0;
-  return words + strip + 20 + 2 + edges(n).length * (LINE + 13) + 20 + LABEL + 4 + linesOf(n.reason, POSTER.edges, LEFT) * LINE;
+  return words + strip + 20 + 2 + edges(n).length * (TEXT_LINE + 13) + 20 + LABEL + 4 + linesOf(n.reason, POSTER.edges, LEFT) * TEXT_LINE;
 };
 
 export default template({
@@ -79,7 +78,7 @@ export default template({
     const notes = Math.max(...stops.map((stop) => linesOf(status(n, stop).note, POSTER.edges, PAGE.width)));
     const space = room(h.where.length, dates.length, notes);
     // A PDF page doesn't flow onto the next: words that don't fit would be cut off, so they're refused.
-    const over = Math.ceil((leftHeight(n, r) - space) / LINE);
+    const over = Math.ceil((leftHeight(n, r) - space) / TEXT_LINE);
     if (over > 0) {
       const what = r.kind === "reduced" ? "the reason" : "the step-free way through or the reason";
       throw new Error(`Too long for a poster: what to do and why run ${over} line${over > 1 ? "s" : ""} past the page. Shorten ${what} by about ${over * 36} characters`);

@@ -15,14 +15,13 @@
 import { Button, Column, Email, Heading, LineBreak, Link, Row, Section, Span, Table, TableCell, TableRow, Text } from "@hyper-elements/react";
 import { formatDate, template } from "@hyper-elements/react/template";
 import { lint } from "@hyper-elements/lint";
-import { ENAMEL, FONTS, INK, QUIET, RULE, label, theme } from "./_kit/brand.ts";
+import { ENAMEL, FONTS, INK, QUIET, RULE, label, theme, WHITE } from "./_kit/brand.ts";
 import { assertNotice, edges, headline, read, steps, when, type Notice } from "./_kit/copy.ts";
 import { Departures, LineDiagram } from "./_kit/email-diagram.tsx";
 import { EXAMPLE, FIELDS } from "./_kit/fields.ts";
 import { EMAIL, tight } from "./_kit/type.ts";
 
 const SITE = "https://peregrine.example";
-const WHITE = "#FFFFFF";
 /** A section's padding: 48px either side, 24px on phones, where its gap can be smaller too. */
 type Insets = [number, number, number, number];
 const sides = (top: number, bottom: number, phoneTop: number, phoneBottom: number, phoneGap?: number) => ({

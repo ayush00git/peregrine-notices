@@ -4,7 +4,7 @@
     "module": "../../templates/notice-email.tsx",
     "id": "peregrine.NoticeEmail",
     "version": "1.0.0",
-    "sha256": "2158c30769e82b7b74df90202d7fd930976e53d21f0d2cb2792063f0c85f5775"
+    "sha256": "61421970ebb26e48357dff519bf24edc6ff0ea1b044fa3bd166664e0d50c8fa8"
   },
   "values": {
     "notice": "PE-2702",
