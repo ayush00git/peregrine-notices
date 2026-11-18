@@ -1,0 +1,25 @@
+{
+  "version": 1,
+  "template": {
+    "module": "../../templates/notice-email.tsx",
+    "id": "peregrine.NoticeEmail",
+    "version": "1.0.0",
+    "sha256": "60e525e8debf58fbf73f61674e88a4ee8c4c5b90b118b5980ea6d88ce67fdb18"
+  },
+  "values": {
+    "notice": "PE-2703",
+    "posted": "2027-02-08",
+    "starts": "2027-03-01",
+    "ends": "2027-03-26",
+    "change": [
+      {
+        "type": "viaduct.reduced",
+        "after": "21:00",
+        "everyMinutes": 20,
+        "lastTrain": "23:40"
+      }
+    ],
+    "extraMinutes": 10,
+    "reason": "We're repainting the Viaduct's steelwork at night, so one track is closed after nine."
+  }
+}

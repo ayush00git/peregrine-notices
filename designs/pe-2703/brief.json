@@ -1,0 +1,16 @@
+{
+  "notice": "PE-2703",
+  "posted": "2027-02-08",
+  "starts": "2027-03-01",
+  "ends": "2027-03-26",
+  "change": [
+    {
+      "type": "viaduct.reduced",
+      "after": "21:00",
+      "everyMinutes": 20,
+      "lastTrain": "23:40"
+    }
+  ],
+  "extraMinutes": 10,
+  "reason": "We're repainting the Viaduct's steelwork at night, so one track is closed after nine."
+}

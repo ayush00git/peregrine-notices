@@ -1,0 +1,18 @@
+{
+  "notice": "PE-2702",
+  "posted": "2027-01-18",
+  "starts": "2027-02-06",
+  "ends": "2027-02-07",
+  "change": [
+    {
+      "type": "moor.skip",
+      "stop": "Saltmarket",
+      "useInstead": "Kiln Row",
+      "stepFree": "Kiln Row has no lift: for step-free access, take bus 7 from Saltmarket to Moorside.",
+      "lastTrainBefore": "23:05",
+      "firstTrainAfter": "06:10"
+    }
+  ],
+  "extraMinutes": 10,
+  "reason": "We're putting a lift and a second staircase into Saltmarket station, so it's step-free from both platforms."
+}

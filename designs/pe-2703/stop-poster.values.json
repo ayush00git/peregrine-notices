@@ -1,0 +1,28 @@
+{
+  "version": 1,
+  "template": {
+    "module": "../../templates/stop-poster.tsx",
+    "id": "peregrine.StopPoster",
+    "version": "1.0.0",
+    "sha256": "50c643180b60004bced18272500ef10fefe49a60d1d61e47105bb558d85ae5e0"
+  },
+  "formats": [
+    "a4"
+  ],
+  "values": {
+    "notice": "PE-2703",
+    "posted": "2027-02-08",
+    "starts": "2027-03-01",
+    "ends": "2027-03-26",
+    "change": [
+      {
+        "type": "viaduct.reduced",
+        "after": "21:00",
+        "everyMinutes": 20,
+        "lastTrain": "23:40"
+      }
+    ],
+    "extraMinutes": 10,
+    "reason": "We're repainting the Viaduct's steelwork at night, so one track is closed after nine."
+  }
+}
