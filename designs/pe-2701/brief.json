@@ -1,0 +1,22 @@
+{
+  "notice": "PE-2701",
+  "posted": "2026-12-14",
+  "starts": "2027-01-09",
+  "ends": "2027-01-11",
+  "change": [
+    {
+      "type": "harbour.closure",
+      "from": "Quayside",
+      "to": "Millbrook",
+      "bus": {
+        "route": "1X",
+        "everyMinutes": 10
+      },
+      "stepFree": "Bus 1X is step-free, and so are Quayside, Saltmarket and Millbrook stations.",
+      "lastTrainBefore": "22:10",
+      "firstTrainAfter": "05:30"
+    }
+  ],
+  "extraMinutes": 20,
+  "reason": "We're renewing the track and signals under Castle Street, so trains can run every six minutes from March."
+}
