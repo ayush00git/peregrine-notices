@@ -19,6 +19,7 @@ jobs:
           path: node_modules/.cache/hyper-elements
           key: hyper-elements-fonts-${{ hashFiles('templates/_kit/brand.ts') }}
       - run: npm ci
+      - run: npm run typecheck
       # The templates check their own examples, in every format.
       - run: npx hyper-elements check templates/ --max-warnings 0
       # Every notice in designs/ must have been checked by one of our templates.
