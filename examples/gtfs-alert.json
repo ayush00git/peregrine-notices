@@ -1,0 +1,27 @@
+{
+  "id": "works-2027-01-harbour-castle-street",
+  "alert": {
+    "active_period": [{ "start": 1799452800, "end": 1799711999 }],
+    "informed_entity": [
+      { "route_id": "harbour", "stop_id": "quayside" },
+      { "route_id": "harbour", "stop_id": "chandlers-yard" },
+      { "route_id": "harbour", "stop_id": "saltmarket" },
+      { "route_id": "harbour", "stop_id": "castle-street" },
+      { "route_id": "harbour", "stop_id": "millbrook" }
+    ],
+    "cause": "MAINTENANCE",
+    "effect": "NO_SERVICE",
+    "header_text": { "translation": [{ "language": "en", "text": "Harbour line: track and signal renewal at Castle Street" }] },
+    "description_text": {
+      "translation": [{
+        "language": "en",
+        "text": "Line blocked Quayside–Millbrook 00:00 Sat 9 Jan to 23:59 Mon 11 Jan. RRB route 1X, 10 min headway, all stations. Last service before possession 22:10 Fri; first after 05:30 Tue. Journey time +20 min. Renewal of S&C and signalling under Castle Street; enables 6-minute headway from March."
+      }]
+    }
+  },
+  "x_peregrine": {
+    "notice": "PE-2701",
+    "posted": "2026-12-14",
+    "step_free": "Bus 1X is step-free, and so are Quayside, Saltmarket and Millbrook stations."
+  }
+}
