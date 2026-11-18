@@ -1,0 +1,28 @@
+name: check
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      # The CLI keeps the fonts it fetched (Atkinson Hyperlegible, from Google Fonts) here.
+      - uses: actions/cache@v4
+        with:
+          path: node_modules/.cache/hyper-elements
+          key: hyper-elements-fonts-${{ hashFiles('templates/_kit/brand.ts') }}
+      - run: npm ci
+      # The templates check their own examples, in every format.
+      - run: npx hyper-elements check templates/ --max-warnings 0
+      # Every notice in designs/ must have been checked by one of our templates.
+      - run: npx hyper-elements check designs/ --require-template --max-warnings 0
+      # Refusals still refuse, every headline fits, the outputs are what we expect.
+      - run: npm test
+      - run: npx hyper-elements render designs/
