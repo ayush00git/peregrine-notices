@@ -21,33 +21,29 @@ trams and trains of Port Ellery, is fictional.
 
 ![Four notices, hard cuts: the Harbour line closure's five posters and card; the Moor line skipping Saltmarket, two posters; the Viaduct line's fewer evening trams, six posters; then the same closure without a bus, five empty outlines marked "not written" beside check's refusal](docs/peregrine.gif)
 
-## A notice is only the facts
+## Try it in 2 minutes
 
-```json
-{
-  "notice": "PE-2701",
-  "posted": "2026-12-14",
-  "starts": "2027-01-09",
-  "ends": "2027-01-11",
-  "change": [{
-    "type": "harbour.closure",
-    "from": "Quayside",
-    "to": "Millbrook",
-    "bus": { "route": "1X", "everyMinutes": 10 },
-    "stepFree": "Bus 1X is step-free, and so are Quayside, Saltmarket and Millbrook stations.",
-    "lastTrainBefore": "22:10",
-    "firstTrainAfter": "05:30"
-  }],
-  "extraMinutes": 20,
-  "reason": "We're renewing the track and signals under Castle Street, so trains can run every six minutes from March."
-}
+You need Node 20 or newer.
+
+```bash
+git clone https://github.com/ayush00git/peregrine-notices && cd peregrine-notices && npm ci
 ```
 
-No headline, no colours, no list of stops for posters: the templates decide those. The change is one of three kinds
-on each of five lines (`harbour.closure`, `moor.skip`, `viaduct.reduced`…), named after what GTFS-Realtime calls them
-(`NO_SERVICE`, `REDUCED_SERVICE`).
+```bash
+npm run render
+```
 
-![The three cards side by side: "No trains between Quayside and Millbrook" with the closed stretch drawn hollow and bus 1X dashed beside it; "Trains skip Saltmarket" with a hollow tick and a 7 minute walk to Kiln Row; "Fewer trams after 21:00, every 20 minutes" with the evening's departures thinning out](docs/cards.png)
+Then open, in `out/designs/pe-2701/`:
+
+- `notice-email.html`: the rider email (open it in a browser)
+- `stop-poster.a4.pdf`: five posters, one per affected stop
+- `notice-card.landscape.png`: the social card
+
+`pe-2702` (a skipped stop) and `pe-2703` (fewer trams) are next to it. To see a notice refused:
+
+```bash
+npx hyper-elements check designs/_refused/closure-without-bus.values.json
+```
 
 ## What it refuses
 
@@ -69,10 +65,8 @@ Every row is a file in [`designs/_refused/`](designs/_refused) and a test: `chec
 | "Fewer" trains that are more | A train every 12 minutes isn't fewer: the Airport line runs every 15 minutes |
 | A poster that would run off the page | Too long for a poster: what to do and why run 1 line past the page. Shorten the step-free way through or the reason by about 36 characters |
 
-The first eight are the fields' own types, refused with their path before anything is built. The last five need
-several fields together, so the templates' `render()` throws them in a planner's words (`template/render`).
-The email also requires, through `@hyper-elements/lint`, an unsubscribe link, link text, contrast, `lang` and preview
-text, and links only to `peregrine.example`. And the headlines can't overflow: see below.
+The first eight are refused by the fields' own types, before anything is built; the last five need several fields
+together, so the templates throw them in a planner's words.
 
 ## What it makes
 
@@ -80,46 +74,67 @@ text, and links only to `peregrine.example`. And the headlines can't overflow: s
 |---|---|
 | <img src="docs/clients/apple-mail.iphone.png" width="360" alt="The rider email as Apple Mail on an iPhone draws it: the Harbour line band with the headline and dates, what to do instead in three numbered steps with the step-free way last, the last and first trains, the line drawn in table cells with the closed stretch hollow and bus 1X dashed beside it, why, and a Plan your journey button"> | <img src="docs/poster-saltmarket.png" width="420" alt="The Saltmarket poster: the Harbour line panel with No trains between Quayside and Millbrook and the dates; No trains at Saltmarket, bus 1X stops at Dock Street outside the Mission; what to do instead, last and first trains, why; and the whole line drawn on the right with YOU ARE HERE at Saltmarket"> |
 
-The email is shown by Hyper Elements' email client emulator (`@hyper-elements/email-clients`), which models Apple
-Mail, Gmail and classic Outlook: see [`docs/clients/`](docs/clients) for the others. It's an emulator, not an inbox.
+The email preview comes from Hyper Elements' email client emulator; [`docs/clients/`](docs/clients) has Outlook and Gmail too.
 
-## How Hyper Elements does the work
+## Make your own notice
 
-- **`template()` with typed fields** ([`templates/_kit/fields.ts`](templates/_kit/fields.ts)). The notice is
-  `prop.text` with patterns (24-hour times, `PE-0000`), `prop.date`, `prop.number` with ranges, a required
-  `prop.object` for the bus and `prop.blocks` taking exactly one change.
-- **Block types generated from the network** ([`templates/_kit/network.ts`](templates/_kit/network.ts)). Each line
-  gets its own `closure`, `skip` and `reduced` types, whose stops are a `prop.choice` of that line's stops. So a stop
-  on another line is a typed error with a path, and `describe --json` gives an agent a schema with one stop list per
-  line (`oneOf`, 15 entries): it can't even write the mistake.
-- **Pages derived from the facts.** The poster template returns a `Document` with one `Document.Page` per affected stop
-  (a closure's stretch, a skip's two stops, every stop of a reduced line). There's no field to forget.
-- **The words are the template's** ([`templates/_kit/copy.ts`](templates/_kit/copy.ts)): headline, dates, steps, what
-  the change means at each stop. The reason is the planner's one sentence, flagged for review with `guidance`.
-- **Headlines that fit, proven.** The card uses `Heading fit` with `image/fit`, `image/glyph` and `image/overflow`
-  required, measured by `renderImage`. `fit` is Canvas-only, so for the email and the posters
-  [`test/headlines.test.ts`](test/headlines.test.ts) lists every line the network can produce (every stop pair,
-  every time and interval, every status) and lays each out with `layoutImage()` in Atkinson Hyperlegible at its size:
-  each must take one line in 90% of its measure. Rename a stop to "Castle Street Exchange" and CI fails, naming
-  the line and the size.
-- **The line drawn three ways from the same data.** Table cells in the email
-  ([`email-diagram.tsx`](templates/_kit/email-diagram.tsx)), `Svg` under a `Layer` on the poster
-  ([`poster-line.tsx`](templates/_kit/poster-line.tsx)) and on the card ([`card-strip.tsx`](templates/_kit/card-strip.tsx)).
-  The same grammar everywhere: solid where trains run, hollow where they don't, the bus dashed beside it.
-- **One brand** ([`templates/_kit/brand.ts`](templates/_kit/brand.ts)): `defineTheme`, Atkinson Hyperlegible Next and
-  Mono (the Braille Institute's typefaces for low-vision readers, because a notice is read at a stop, in the rain, by
-  everyone), one colour per notice, its line's, in three places only.
-- **Values files and the CLI.** Notices are data (`designs/*/…values.json`), made with `design new`, changed with
-  `design set` and rendered with `render`. CI runs `check templates/` (every template's example, in every format) and
-  `check designs/ --require-template`.
+A notice is only the facts. Save this as `designs/my-notice/brief.json`:
 
-## Run it
+```json
+{
+  "notice": "PE-2801",
+  "posted": "2027-03-01",
+  "starts": "2027-03-20",
+  "ends": "2027-03-21",
+  "change": [{
+    "type": "coast.closure",
+    "from": "Breakwater",
+    "to": "Gull Point",
+    "bus": { "route": "4C", "everyMinutes": 12 },
+    "stepFree": "Bus 4C is step-free, and so are Breakwater and Gull Point.",
+    "lastTrainBefore": "23:15",
+    "firstTrainAfter": "06:00"
+  }],
+  "extraMinutes": 15,
+  "reason": "We're replacing the tram rails along the seafront at Seaholme."
+}
+```
 
-Node 22 (`.nvmrc`):
+No headline, no colours, no list of stops for posters: the templates decide those. Make it for each template (each
+checks it first), then render it into `out/designs/my-notice/`:
 
 ```bash
-npm ci
+for t in notice-email stop-poster notice-card; do npx hyper-elements design new templates/$t.tsx -o designs/my-notice/$t.values.json --values designs/my-notice/brief.json; done
 ```
+
+```bash
+npx hyper-elements render designs/my-notice/
+```
+
+The change `type` is a line (`harbour`, `moor`, `viaduct`, `airport`, `coast`) and a kind (`closure`, `skip`,
+`reduced`); the lines and their stops are in [`templates/_kit/network.ts`](templates/_kit/network.ts). Delete the bus,
+or name a stop from another line, and it's refused. For agents, [`AGENTS.md`](AGENTS.md) has the loop and how to make
+a notice from a GTFS-Realtime alert.
+
+**Not a transit operator?** Ferries, campus shuttles, stadium gates, a building's lifts: the contract is the same
+(what's closed, what to do instead, when, how much longer). Swap `network.ts` for your own.
+
+![The three cards side by side: "No trains between Quayside and Millbrook" with the closed stretch drawn hollow and bus 1X dashed beside it; "Trains skip Saltmarket" with a hollow tick and a 7 minute walk to Kiln Row; "Fewer trams after 21:00, every 20 minutes" with the evening's departures thinning out](docs/cards.png)
+
+## How it uses Hyper Elements
+
+- Three `template()`s (an `Email`, a `Document` and a `Canvas`) share one set of typed fields, so one brief makes all
+  three, and `check` refuses bad values by field before anything is drawn.
+- The change's block types are generated from the network, one per line and kind, so each type's stops are only that
+  line's: a stop on another line can't be written, even by an agent reading the JSON Schema.
+- The poster template gives the PDF one `Document.Page` per affected stop, worked out from the change.
+- The card fits its headline with `Heading fit`; for the email and posters, a test measures every headline the network
+  can produce with `layoutImage()`.
+- Notices are values files, made with `design new`; CI runs `check designs/ --require-template`.
+
+The detail, the gallery copies and the notes from building it: [`docs/how-it-works.md`](docs/how-it-works.md).
+
+## Checks
 
 ```bash
 npm run check
@@ -129,75 +144,14 @@ npm run check
 npm test
 ```
 
-```bash
-npm run render
-```
-
-`render` writes each notice's email (HTML and plain text), poster PDF and card PNG under `out/designs/`. The fonts come
-from Google Fonts the first time and are cached. `npm test` runs the refusals, the headline measurements, contrast and
-the outputs (5, 2 and 6 poster pages; every email under Gmail's 102 KB clip).
-
-The pictures in `docs/` are made with `npm run hero`, `npm run gif`, `npm run previews` and `npx tsx scripts/docs.ts`
-(these need Chromium for Playwright, `pdftoppm`, ffmpeg and ImageMagick).
-
-## Make a notice
-
-```bash
-npx hyper-elements describe templates/stop-poster.tsx
-```
-
-Write `designs/pe-2704/brief.json` with the facts, then make the notice for each template. Each is checked before it's
-written:
-
-```bash
-for t in notice-email stop-poster notice-card; do npx hyper-elements design new templates/$t.tsx -o designs/pe-2704/$t.values.json --values designs/pe-2704/brief.json; done
-```
-
-```bash
-npx hyper-elements render designs/pe-2704/
-```
-
-For agents, [`AGENTS.md`](AGENTS.md) has the loop and a mapping from a GTFS-Realtime alert
-([`examples/gtfs-alert.json`](examples/gtfs-alert.json)) to a brief.
-
-**Not a transit operator?** Ferries, campus shuttles, stadium gates, a building's lifts, a utility's planned works: the
-contract is the same (what's closed, what to do instead, when, how much longer). Swap
-[`network.ts`](templates/_kit/network.ts) for your own and keep the rest.
+The tests cover the 13 refusals, every headline's width, contrast, and the outputs (5, 2 and 6 poster pages; every
+email under Gmail's 102 KB clip).
 
 ## In the Hyper Elements gallery
 
-[`gallery/`](gallery) holds each template as one file, in the shape of the gallery's own templates
-(`apps/website/examples/templates/`): `export const meta`, and a default export that draws the template's example.
-They're generated from `templates/` (`npm run gallery`), and `scripts/gallery-check.tsx` renders them as the site's
-generator does: bundled alone with esbuild, rendered with the email client checks, the PDF and PNG written with the
-fonts fetched from Google Fonts. The gallery copies leave out the two imports the site can't resolve: the email's
-lint rules and the poster's hyphenation setting.
-
-## Files
-
-```text
-templates/            the three templates, one root each
-  _kit/               what they share: network, fields, words, brand, type sizes, and each output's drawing
-designs/pe-270x/      three notices (closure, skip, fewer trams): brief.json and a values file per template
-designs/_refused/     thirteen notices that must stay refused
-test/                 refusals, headline measurements, words, contrast, outputs
-gallery/              the templates as single files for the gallery
-scripts/              rerecord (after a template change), hero, gif, previews, docs, gallery, gallery-check
-examples/             a GTFS-Realtime alert an agent can make a notice from
-```
-
-## Notes from building it
-
-Built on `@hyper-elements/react` 0.5.0 and `@hyper-elements/cli` 0.3.0, the first versions with `template()`. Things
-we worked around, for the maintainers:
-
-- `renderPdf` hyphenates text that wraps ("be- / tween"), unlike the print HTML and the image, so the poster template
-  imports [`templates/_kit/pdf.ts`](templates/_kit/pdf.ts), which turns react-pdf's hyphenation off.
-- A `LineBreak` in a Document adds a non-embedded Helvetica-Bold to the PDF, so the posters set each line of a
-  headline as its own block.
-- `check()` lists a field's guidance once per block type in the schema, so the step-free hint is in its label instead.
-- The CLI's `preview` doesn't take values files, so `scripts/previews.tsx` uses `renderInEmailClients()` on the
-  checked snapshot.
+[`gallery/`](gallery) has each template as one file, in the shape of the gallery's own: `export const meta` and a
+default export that draws the example. `npm run gallery` regenerates them and renders them as the site's generator
+does.
 
 ## License
 
