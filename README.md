@@ -47,9 +47,9 @@ npx hyper-elements check designs/_refused/closure-without-bus.values.json
 
 ## What it refuses
 
-Every row is a file in [`designs/_refused/`](designs/_refused) and a test: `check` says exactly this, at this field.
+Give it a bad notice and nothing gets made. It tells you what's wrong instead:
 
-| The mistake | What `check` says |
+| The mistake | What it says |
 |---|---|
 | Saying what's closed, not what to do | `values.change[0].bus`: Replacement bus is required |
 | Forgetting wheelchair users | `values.change[0].stepFree`: Step-free way through (which stop, bus or lift) is required |
@@ -65,8 +65,6 @@ Every row is a file in [`designs/_refused/`](designs/_refused) and a test: `chec
 | "Fewer" trains that are more | A train every 12 minutes isn't fewer: the Airport line runs every 15 minutes |
 | A poster that would run off the page | Too long for a poster: what to do and why run 1 line past the page. Shorten the step-free way through or the reason by about 36 characters |
 
-The first eight are refused by the fields' own types, before anything is built; the last five need several fields
-together, so the templates throw them in a planner's words.
 
 ## What it makes
 
@@ -155,5 +153,4 @@ does.
 
 ## License
 
-MIT. Atkinson Hyperlegible Next and Mono are © the Braille Institute, under the SIL Open Font License, loaded from
-Google Fonts.
+MIT
