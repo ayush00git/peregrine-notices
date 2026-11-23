@@ -47,24 +47,21 @@ npx hyper-elements check designs/_refused/closure-without-bus.values.json
 
 ## What it refuses
 
-Give it a bad notice and nothing gets made. It tells you what's wrong instead:
+Peregrine won't make a notice that would leave riders stuck. If something important is missing or wrong, it makes
+nothing and says what to fix. For example, it refuses a notice that:
 
-| The mistake | What it says |
-|---|---|
-| Saying what's closed, not what to do | `values.change[0].bus`: Replacement bus is required |
-| Forgetting wheelchair users | `values.change[0].stepFree`: Step-free way through (which stop, bus or lift) is required |
-| A stop on another line | `values.change[0].from`: From (a Harbour line stop): expected one of "Ellery Central", "Ropewalk", … not "Kiln Row" |
-| "Mill brook" | `values.change[0].to`: To (a Harbour line stop): expected one of … not "Mill brook" |
-| "10pm" | `values.change[0].lastTrainBefore`: Last train before (24-hour, like 23:40): doesn't match … |
-| "This weekend", on a poster up for ten days | `values.starts`: First day of the works: expected a date as YYYY-MM-DD, not "this weekend" |
-| Two changes in one notice | `values.change`: 2 blocks; this template takes exactly 1 |
-| Ninety minutes "extra" | `values.extraMinutes`: Extra minutes to allow: expected an integer from 0 to 60, not 90 |
-| Dates the wrong way round | The works end (2027-01-09) before they start (2027-01-11) |
-| Posting it the Wednesday before | Posted 2027-01-06, 3 days before the works start on 2027-01-09: riders need at least 7 days' notice |
-| "Skipping" the end of the line | High Moor is the end of the Moor line, so trains can't skip it: write it as a closure from Moorside to High Moor |
-| "Fewer" trains that are more | A train every 12 minutes isn't fewer: the Airport line runs every 15 minutes |
-| A poster that would run off the page | Too long for a poster: what to do and why run 1 line past the page. Shorten the step-free way through or the reason by about 36 characters |
+- closes a line but gives no replacement bus
+- names a stop that isn't on that line, or misspells one
+- doesn't say how wheelchair users get through
+- has dates the wrong way round, or is posted less than a week ahead
 
+A closure with no bus gets this, and no email, poster or card:
+
+```text
+error template/required at values.change[0].bus: Replacement bus is required
+```
+
+All 13 cases it refuses are in [`designs/_refused/`](designs/_refused), each checked by a test.
 
 ## What it makes
 
