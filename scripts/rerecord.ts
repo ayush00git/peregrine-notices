@@ -11,7 +11,7 @@ import { join } from "node:path";
 
 const ROOT = join(import.meta.dirname, "..");
 const CLI = join(ROOT, "node_modules", "@hyper-elements", "cli", "dist", "bin.js");
-const TEMPLATES = ["notice-email", "stop-poster", "notice-card"];
+const TEMPLATES = ["notice-email", "notice-page", "stop-poster", "notice-card"];
 const designs = join(ROOT, "designs");
 
 let failed = false;

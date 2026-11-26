@@ -23,6 +23,13 @@ const GALLERY = [
     meta: { title: "Peregrine service change email", description: "A rider alert for a line closure: the change on the line's colour, what to do instead, and the line drawn in table cells, so it shows with images off.", root: "Email" },
   },
   {
+    slug: "peregrine-notice-page",
+    template: "notice-page.tsx",
+    kit: ["email-diagram.tsx"],
+    format: undefined,
+    meta: { title: "Peregrine service change page", description: "The web notice for a line closure: the change on the line's colour, what to do instead beside the line, and where the replacement bus stops at every station.", root: "Page" },
+  },
+  {
     slug: "peregrine-stop-posters",
     template: "stop-poster.tsx",
     kit: ["poster-fit.ts", "poster-line.tsx"],
@@ -73,6 +80,9 @@ for (const g of GALLERY) {
   let source = parts.join("\n\n");
   // The template is the default export of its own file; here it's T, and the default export draws its example.
   source = source.replace(/^export default template\(/m, "const T = template(");
+  if (g.template === "notice-page.tsx") {
+    source = source.replace(/\n\s*plugins: \{ lint: lint\(\) \},/, "").replace(/require: \{ lint: \[[^\]]*\], /, "require: { ");
+  }
   if (g.template === "notice-email.tsx") {
     // Without @hyper-elements/lint: the lint rules go, the links and root rules stay.
     source = source.replace(/\n\s*plugins: \{ lint: lint\(\{[^}]*\}\) \},/, "").replace(/\n\s*require: \{ lint: \[[^\]]*\](, core: \[[^\]]*\])? \},/, (m) => (m.includes("core:") ? m.replace(/lint: \[[^\]]*\], /, "") : ""));

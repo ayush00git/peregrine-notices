@@ -15,8 +15,8 @@ refuses the notice that would strand someone.**
 - **Built for agents.** An agent reads `describe`, writes a values file and fixes what `check` says. CI rejects any
   notice a template didn't check.
 
-Peregrine is made with [Hyper Elements](https://github.com/hyper-elements/hyper-elements) `template()`: three templates
-(an `Email`, a `Document` and a `Canvas`) that share one notice contract, one network and one brand. Peregrine, the
+Peregrine is made with [Hyper Elements](https://github.com/hyper-elements/hyper-elements) `template()`: four templates
+(an `Email`, a `Page`, a `Document` and a `Canvas`) that share one notice contract, one network and one brand. Peregrine, the
 trams and trains of Port Ellery, is fictional.
 
 ![Four notices, hard cuts: the Harbour line closure's five posters and card; the Moor line skipping Saltmarket, two posters; the Viaduct line's fewer evening trams, six posters; then the same closure without a bus, five empty outlines marked "not written" beside check's refusal](docs/peregrine.gif)
@@ -36,6 +36,7 @@ npm run render
 Then open, in `out/designs/pe-2701/`:
 
 - `notice-email.html`: the rider email (open it in a browser)
+- `notice-page.html`: the web notice the email and posters link to
 - `stop-poster.a4.pdf`: five posters, one per affected stop
 - `notice-card.landscape.png`: the social card
 
@@ -71,6 +72,10 @@ All 13 cases it refuses are in [`designs/_refused/`](designs/_refused), each che
 
 The email preview comes from Hyper Elements' email client emulator; [`docs/clients/`](docs/clients) has Outlook and Gmail too.
 
+The web notice, with where the replacement bus stops at each station:
+
+![The web notice for PE-2701: the Harbour line band with the headline and dates; what to do instead beside the whole line drawn in cells; where bus 1X stops at each of the five stations; why; and a Plan your journey button](docs/page.png)
+
 ## Make your own notice
 
 A notice is only the facts. Save this as `designs/my-notice/brief.json`:
@@ -99,7 +104,7 @@ No headline, no colours, no list of stops for posters: the templates decide thos
 checks it first), then render it into `out/designs/my-notice/`:
 
 ```bash
-for t in notice-email stop-poster notice-card; do npx hyper-elements design new templates/$t.tsx -o designs/my-notice/$t.values.json --values designs/my-notice/brief.json; done
+for t in notice-email notice-page stop-poster notice-card; do npx hyper-elements design new templates/$t.tsx -o designs/my-notice/$t.values.json --values designs/my-notice/brief.json; done
 ```
 
 ```bash
@@ -118,8 +123,8 @@ a notice from a GTFS-Realtime alert.
 
 ## How it uses Hyper Elements
 
-- Three `template()`s (an `Email`, a `Document` and a `Canvas`) share one set of typed fields, so one brief makes all
-  three, and `check` refuses bad values by field before anything is drawn.
+- Four `template()`s (an `Email`, a `Page`, a `Document` and a `Canvas`) share one set of typed fields, so one brief
+  makes all four, and `check` refuses bad values by field before anything is drawn.
 - The change's block types are generated from the network, one per line and kind, so each type's stops are only that
   line's: a stop on another line can't be written, even by an agent reading the JSON Schema.
 - The poster template gives the PDF one `Document.Page` per affected stop, worked out from the change.

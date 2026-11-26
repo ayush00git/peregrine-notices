@@ -16,7 +16,7 @@ anything is drawn. The templates are in `templates/` (with their shared parts in
    templates decide those.
 3. **Make the notice for each template**, which checks it before writing anything:
    ```bash
-   for t in notice-email stop-poster notice-card; do
+   for t in notice-email notice-page stop-poster notice-card; do
      npx hyper-elements design new templates/$t.tsx -o designs/<id>/$t.values.json --values designs/<id>/brief.json
    done
    ```

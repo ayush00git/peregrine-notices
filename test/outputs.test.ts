@@ -38,6 +38,15 @@ test("each email stays under Gmail's 102 KB clip, and says its stops in plain te
   for (const words of ["No trains", "between Quayside", "and Millbrook", "bus 1X", "Step-free", "Last train"]) assert.ok(text.includes(words.toLowerCase()), `plain text says "${words}"`);
 });
 
+test("each notice has its web page, with the headline and the line", () => {
+  for (const id of ["pe-2701", "pe-2702", "pe-2703"]) {
+    const html = readFileSync(out(`${id}/notice-page.html`), "utf8");
+    assert.match(html, /<html lang="en-GB"/);
+    assert.ok(html.includes("What to do instead"), id);
+  }
+  assert.ok(readFileSync(out("pe-2701/notice-page.html"), "utf8").includes("Where bus 1X stops"));
+});
+
 test("the card is 1200 by 675, drawn at twice the pixels", () => {
   const png = readFileSync(out("pe-2701/notice-card.landscape.png"));
   assert.equal(png.readUInt32BE(16), 2400);
